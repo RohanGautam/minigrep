@@ -18,6 +18,9 @@ struct Config {
 }
 impl Config {
     fn new(args: &Vec<String>) -> Config {
+        if args.len() < 3 {
+            panic!("not enough arguments");
+        }
         // clone creates a new copy for our struct to own.
         let query = args[1].clone();
         let filename = args[2].clone();
