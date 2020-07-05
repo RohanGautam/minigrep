@@ -1,4 +1,4 @@
-use std::{error::Error, fs};
+use std::{env, error::Error, fs};
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     // `?` will RETURN the error(ending fn execution) if it encounters an `Err` in the `Result` it follows.
@@ -34,7 +34,17 @@ impl Config {
         let query = args[1].clone();
         let filename = args[2].clone();
 
-        Ok(Config { query, filename })
+        // `is_err` will return true if env var not found(and theres an error)
+        // this means we do case sensitive search by default.
+        // to do case_insensitive search, linux : `CASE_INSENSITIVE=1 cargo run to poem.txt`
+        let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
+
+        // also, var names are same as in the struct, so e dont need explicit key:val initialization style.
+        Ok(Config {
+            query,
+            filename,
+            case_sensitive,
+        })
     }
 }
 
