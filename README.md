@@ -1,4 +1,5 @@
 - Using primitive values when a complex type would be more appropriate is an anti-pattern known as primitive obsession.
+- lifetime params specify which argument lifetime is connected to the lifetime of the return value.
 
 #
 
