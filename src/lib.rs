@@ -3,7 +3,12 @@ use std::{error::Error, fs};
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     // `?` will RETURN the error(ending fn execution) if it encounters an `Err` in the `Result` it follows.
     let contents: String = fs::read_to_string(config.filename)?;
-    // `()` is a unit type. It means that we mostly do not care abput return type if it goes well.
+
+    for line in search(&config.query, &contents) {
+        println!("> {}", line);
+    }
+
+    // `()` is a unit type. It means that we mostly do not care about return type if it goes well.
     // We do, however, care about the errors that might occour, and thats why the result type exists with a
     // dynamic error return type
     return Ok(());
