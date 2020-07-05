@@ -2,6 +2,8 @@ use std::{env, fs};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
+    // these are config vars, but others are logic vars.
+    // seperate logic to lib.rs, and let main be for arg parsing, config, handling error in logic.
     let query = &args[1];
     let filename = &args[2];
 
