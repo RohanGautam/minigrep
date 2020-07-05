@@ -4,7 +4,13 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     // `?` will RETURN the error(ending fn execution) if it encounters an `Err` in the `Result` it follows.
     let contents: String = fs::read_to_string(config.filename)?;
 
-    for line in search(&config.query, &contents) {
+    let results = if config.case_sensitive {
+        search(&config.query, &contents)
+    } else {
+        search_case_insensitive(&config.query, &contents)
+    };
+
+    for line in results {
         println!("> {}", line);
     }
 
@@ -17,6 +23,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 pub struct Config {
     pub query: String,
     pub filename: String,
+    pub case_sensitive: bool,
 }
 impl Config {
     pub fn new(args: &Vec<String>) -> Result<Config, &str> {
@@ -45,6 +52,20 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     lines
 }
 
+pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    let query = query.to_lowercase();
+    let mut lines: Vec<&str> = Vec::new();
+    for line in contents.lines() {
+        if line.to_lowercase().contains(&query) {
+            // the `line` added to `lines` is a reference to the line in the contents variable.
+            // this is why the result and contents MUST have the same lifetime. Because the result contains
+            // references to the content.
+            lines.push(line);
+        }
+    }
+    lines
+}
+
 // Tests! In TDD(test driven development) you write tests before the code, and write code after that such that the tests pass.
 // gives you clarity on as to what you're working towards.
 #[cfg(test)]
@@ -53,12 +74,26 @@ mod tests {
     use super::*;
 
     #[test]
-    fn one_result() {
+    fn case_sensitive() {
         let query = "duct";
         let contents = "\
 Rust:
 safe, fast, productive.
 Pick three.";
         assert_eq!(search(query, contents), vec!["safe, fast, productive."])
+    }
+
+    #[test]
+    fn case_insensitive() {
+        let query = "rUsT";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.
+Trust me.";
+        assert_eq!(
+            search_case_insensitive(query, contents),
+            vec!["Rust:", "Trust me."]
+        )
     }
 }
