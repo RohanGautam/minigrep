@@ -17,14 +17,14 @@ struct Config {
     filename: String,
 }
 impl Config {
-    fn new(args: &Vec<String>) -> Config {
+    fn new(args: &Vec<String>) -> Result<Config, &str> {
         if args.len() < 3 {
-            panic!("not enough arguments");
+            return Err("not enough arguments");
         }
         // clone creates a new copy for our struct to own.
         let query = args[1].clone();
         let filename = args[2].clone();
 
-        Config { query, filename }
+        Ok(Config { query, filename })
     }
 }
