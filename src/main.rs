@@ -7,15 +7,16 @@ fn main() {
         println!("Problem parsing arguments: {}", err);
         process::exit(1);
     });
-
     println!("Searching for {}", config.query);
     println!("Reading file {}", config.filename);
+    run(config); // give ownership
+}
+fn run(config: Config) {
     //read a file into a string
     let contents: String =
         fs::read_to_string(config.filename).expect("Error reading the file specified");
     println!("Read:\n{}", contents);
 }
-
 struct Config {
     query: String,
     filename: String,
