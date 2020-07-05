@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, fs};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -7,4 +7,7 @@ fn main() {
 
     println!("Searching for {}", query);
     println!("Reading file {}", filename);
+    //read a file into a string
+    let contents: String = fs::read_to_string(filename).expect("Error reading the file specified");
+    println!("Read:\n{}", contents);
 }
