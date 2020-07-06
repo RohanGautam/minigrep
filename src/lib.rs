@@ -55,16 +55,10 @@ impl Config {
 
 // the lifetime params say that: the search results will be valid as long as the contents are valid. Can last even after query goes out of scope.
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut lines: Vec<&str> = Vec::new();
-    for line in contents.lines() {
-        if line.contains(query) {
-            // the `line` added to `lines` is a reference to the line in the contents variable.
-            // this is why the result and contents MUST have the same lifetime. Because the result contains
-            // references to the content.
-            lines.push(line);
-        }
-    }
-    lines
+    contents
+        .lines()
+        .filter(|line| line.contains(query))
+        .collect()
 }
 
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
