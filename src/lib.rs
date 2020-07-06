@@ -26,13 +26,18 @@ pub struct Config {
     pub case_sensitive: bool,
 }
 impl Config {
-    pub fn new(args: &Vec<String>) -> Result<Config, &str> {
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        }
-        // clone creates a new copy for our struct to own.
-        let query = args[1].clone();
-        let filename = args[2].clone();
+    pub fn new(mut args: std::env::Args) -> Result<Config, &'static str> {
+        // use next to discard the first argument
+        args.next();
+
+        let query = match args.next() {
+            Some(val) => val,
+            None => return Err("Didnt recieve query param"),
+        };
+        let filename = match args.next() {
+            Some(val) => val,
+            None => return Err("Didnt recieve filename param"),
+        };
 
         // `is_err` will return true if env var not found(and theres an error)
         // this means we do case sensitive search by default.
